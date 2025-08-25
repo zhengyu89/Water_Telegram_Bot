@@ -84,6 +84,19 @@ Automated_water/
 ```
 
 -----
+How to get your **Telegram Bot Token** and **Chat ID**:
+
+   **Step 1: Create a Bot with BotFather**
+   - Open Telegram and search for **BotFather**.
+   - Start a chat and send `/newbot`.
+   - Follow the instructions: give your bot a **name** and a **username**.
+   - After creating, BotFather will give you a **bot token**. Copy this.
+
+   **Step 2: Get your Chat ID**
+   - Start a chat with your bot (send any message).
+   - Go to this URL in a browser (replace `YOUR_BOT_TOKEN`):
+     https://api.telegram.org/botYOUR_BOT_TOKEN/getUpdates
+   - Look for `"chat":{"id":NUMBER,...}` in the JSON response. That NUMBER is your **CHAT_ID**.
 
 ## 🥤 Why?
 
