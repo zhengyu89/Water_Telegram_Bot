@@ -1,77 +1,90 @@
 #  python -m Automated_water
 #  .\venv\Scripts\activate  
 
+# python -m Automated_water
+# .\venv\Scripts\activate  
+
 import telegram
 import time
 import random
 import os
 import asyncio
 from datetime import datetime
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
 
 API_TOKEN = os.getenv('API_TOKEN')
-print(API_TOKEN)
+print(f"API_TOKEN: {API_TOKEN}")
 CHAT_ID = os.getenv('CHAT_ID')
-print(CHAT_ID)
+print(f"CHAT_ID: {CHAT_ID}")
 
 # --- SCRIPT LOGIC ---
-# 2. Define the function as asynchronous with "async def"
-async def send_random_voice_message(bot, chat_id):
-    """Selects and sends a random voice message."""
+
+# MODIFIED: The function now accepts a 'voice_file_path' argument
+# instead of choosing a random one inside the function.
+async def send_timed_voice_message(bot, chat_id, voice_file_path):
+    """Sends a text message with the current time and a specific voice message."""
     
+    # --- Part 1: Send the text message with the current time ---
     try:
-        # --> ADDED: Get the current time and format it into a nice string
         now = datetime.now()
         hour_string = now.strftime("%I").lstrip('0')
         minute_string = now.strftime("%M")
-
-        time_string = f"{hour_string}点{minute_string}分了哦~"
+        time_string = now.strftime("%I:%M %p").lstrip('0')
         
-        message_text = f"Hi~ BB💗, 现在是{time_string}"
+        message_text = f"Hi there! 💗 The time is now {time_string}."
         
         print("Sending text message with the current time...")
-        # --> ADDED: Send the text message
         await bot.send_message(chat_id=chat_id, text=message_text)
         print("Text message sent successfully! ✅")
 
     except Exception as e:
         print(f"An error occurred while sending the text message: {e}")
 
-    # --- Part 2: Send the random voice message ---
-    voice_files = [f'Water {i}.ogg' for i in range(1, 9)]
-    
+    # --- Part 2: Send the provided voice message ---
     try:
-        chosen_file = random.choice(voice_files)
-        
-        if os.path.exists(chosen_file):
-            print(f"Sending {chosen_file}...")
-            with open(chosen_file, 'rb') as voice_note:
-                # 3. "await" the function call to wait for it to complete
+        # The function now uses the file path passed to it
+        if os.path.exists(voice_file_path):
+            print(f"Sending {voice_file_path}...")
+            with open(voice_file_path, 'rb') as voice_note:
                 await bot.send_voice(chat_id=chat_id, voice=voice_note)
-            print("Message sent successfully! ✅")
+            print("Voice message sent successfully! ✅")
         else:
-            print(f"Error: File '{chosen_file}' not found.")
+            print(f"Error: File '{voice_file_path}' not found.")
             
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"An error occurred while sending the voice message: {e}")
 
-# 4. Create a main async function to run your loop
+# MODIFIED: The main function now handles the shuffling and looping logic.
 async def main():
     """The main async loop to run the bot task."""
     my_bot = telegram.Bot(token=API_TOKEN)
-    print("Bot started. Sending the first message now...")
+    print("Bot started. Initializing message cycle...")
     
+    # Create the list of voice files once
+    voice_files = [f'Water {i}.ogg' for i in range(1, 9)]
+    
+    # The outer loop ensures the bot runs forever
     while True:
-        await send_random_voice_message(my_bot, CHAT_ID)
-        print("Waiting for 1 hour until the next message... 🕒")
-        # Use asyncio's sleep, as time.sleep() can block async code
-        await asyncio.sleep(3600)
+        print("\n--- Starting a new message cycle. Shuffling files... ---")
+        # Shuffle the list of files to randomize the order for this cycle
+        random.shuffle(voice_files)
+        
+        # This inner loop iterates through the shuffled list, sending one file at a time
+        for file_to_send in voice_files:
+            # Call the function with the specific file from our shuffled list
+            await send_timed_voice_message(my_bot, CHAT_ID, file_to_send)
+            
+            print("Waiting for 1 hour until the next message... 🕒")
+            # Use asyncio's sleep, as time.sleep() can block async code
+            await asyncio.sleep(3600)
+        
+        print("\n--- All messages in the cycle have been sent. Restarting loop. ---")
+
 
 # --- START THE SCRIPT ---
 if __name__ == '__main__':
-    # 5. Use asyncio.run() to start the asynchronous program
+    # Use asyncio.run() to start the asynchronous program
     asyncio.run(main())
 
