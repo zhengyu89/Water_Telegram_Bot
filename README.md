@@ -4,10 +4,18 @@ Every hour, this bot sends a sweet text message with the current time ⏰ and a 
 
 ## ✨ Features
 
-  - Sends a cute text message with the current time.
-  - Randomly selects a voice recording (from Water 1.ogg to Water 8.ogg) and sends it.
-  - Runs forever in a loop — messages are sent every hour.
-  - Super simple to set up, just Python + Telegram bot API.
+| Script               | Description                                                         |
+| -------------------- | ------------------------------------------------------------------- |
+| `Automated_water.py` | Main bot — sends 1 text + 1 random voice every hour (runs forever). |
+| `Sent_ALL.py`        | Sends all voice recordings one-by-one instantly.                    |
+| `Sent_Message.py`    | Lets you send a custom text message via terminal input.             |
+
+
+Other features:
+- Sends a cute text message with the current time.
+- Randomly shuffles 8 voice recordings (Water 1.ogg → Water 8.ogg).
+- Runs automatically in a loop.
+- Pure Python — no database, no server needed.
 
 -----
 
@@ -76,8 +84,10 @@ python -m Automated_water
 
 ```
 Automated_water/
-├── Automated_water.py   # Main script
-├── .env                 # Environment variables (not committed)
+├── Automated_water.py      # Main hourly reminder bot
+├── Sent_ALL.py             # Sends all voice notes in one go
+├── Sent_Message.py         # Send custom message through CLI
+├── .env                    # API token + chat ID (ignored by git)
 ├── Water 1.ogg
 ├── Water 2.ogg
 └── ...
@@ -100,12 +110,14 @@ How to get your **Telegram Bot Token** and **Chat ID**:
 
 ## 🥤 Why?
 
-## Honestly? Just because I want to remind my love to drink water 🥺💗 in the sweetest and most random way possible. Yes, I could just text her... but where’s the fun in that? 😎
+Because love deserves hydration reminders 🥺💗
+Yes, I could text manually…
+but automation = romance + nerd points 😎
 
 ## 🚀 Future Ideas
 
-  - Add more random voice lines.
-  - Schedule different reminders (morning vs night).
+  - More random voice lines
+  - Mood-based messages (morning/night)
   - Maybe send stickers or GIFs too.
 
 -----
